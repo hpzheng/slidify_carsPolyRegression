@@ -1,0 +1,79 @@
+---
+title       : Applying polynomial regression on car stopping distance by speed
+subtitle    : 
+author      : Heping Zheng
+job         : science
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax, bootstrap, quiz]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## The cars dataset
+
+1. From the datasets package
+    ```{r, echo=FALSE}
+    library(datasets)
+    data(cars)
+    str(cars)
+    ```
+
+2. Data is consists of 50 records of 2 columns
+3. Explanation of variables
+    a. dist: stopping distance (in feet)
+    b. speed: speed of car (in M.P.H.)
+
+    ```{r, echo=FALSE}
+    head(cars, 3)
+    ```
+
+
+--- .class #id 
+
+## The scatterplot of the cars dataset
+
+```{r, echo=FALSE}
+plot(cars, xlab = "Speed (mph)", ylab = "Stopping distance (ft)",
+         las = 1, xlim = c(0, 30))
+```
+
+---
+
+## Polynomial fittings with degree from 1 to 6
+
+```{r, echo=FALSE}
+plot(cars, xlab = "Speed (mph)", ylab = "Stopping distance (ft)",
+    las = 1, xlim = c(0, 25))
+d <- seq(0, 25, length.out = 200)
+for(degree in 1:6) {
+  fm <- lm(dist ~ poly(speed, degree), data = cars)
+  assign(paste("cars", degree, sep = "."), fm)
+  lines(d, predict(fm, data.frame(speed = d)), col = degree)
+}
+legend(x=100, legend=paste("degree = ", 1:6, sep=""), col = 1:6, lwd=2)
+```
+
+--- &radio
+## Question 1
+
+
+What is the best polynomial model?
+
+1. _1_
+2. 2
+3. 3
+4. 4
+
+*** .hint
+The simplest model with significant p-value is the best polymonial model
+
+*** .explanation
+```{r, echo=FALSE}
+anova(cars.1, cars.2, cars.3, cars.4)
+```
+All higher degree models are not significant, therefore the first order linear model is the best model
+
+
+
